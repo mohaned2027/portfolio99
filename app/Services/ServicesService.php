@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Services\Admin;
+namespace App\Services;
 
-use App\Repository\Admin\ServicesRepository;
+use App\Repository\ServicesRepository;
 
 class ServicesService
 {

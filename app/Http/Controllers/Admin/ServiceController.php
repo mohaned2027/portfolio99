@@ -6,7 +6,7 @@ use App\Models\Service;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ServicesRequest;
-use App\Services\Admin\ServicesService;
+use App\Services\ServicesService;
 
 class ServiceController extends Controller
 {
