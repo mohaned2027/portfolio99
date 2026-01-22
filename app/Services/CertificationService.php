@@ -41,6 +41,13 @@ class CertificationService
             return false;
         }
 
+        if (isset($data['image'])) {
+            $data['image'] = $this->imageManager->uploadSingleImage($data['image'], 'certifications', 'store', $certification->image);
+            if (! $data['image']) {
+                return false;
+            }
+        }
+
         return $this->certificationRepository->update($certification, $data);
     }
 
@@ -50,7 +57,7 @@ class CertificationService
         if (! $certification) {
             return false;
         }
-
+        $this->imageManager->deleteImageFromLocal($certification->image);
         return $this->certificationRepository->delete($certification);
     }
 }

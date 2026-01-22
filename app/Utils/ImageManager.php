@@ -10,11 +10,13 @@ class ImageManager
     /**
      * Create a new class instance.
      */
-    public function uploadSingleImage($request, $path, $disk)
+    public function uploadSingleImage($file, $path, $disk, $oldPath = null)
     {
-        if ($request) {
-            $this->deleteImageFromLocal($request);
-            $newImageName = $this->generateName($request, $path, $disk);
+        if ($file) {
+            if ($oldPath) {
+                $this->deleteImageFromLocal($oldPath);
+            }
+            $newImageName = $this->generateName($file, $path, $disk);
 
             return $newImageName;
         }
@@ -25,21 +27,17 @@ class ImageManager
     private function generateName($image, $path, $disk)
     {
         $file = Str::uuid().time().'.'.$image->getClientOriginalExtension();
-        dd([
-            public_path('/'),
-            is_dir(public_path('/')),
-            is_writable(public_path('/')),
-        ]);
 
-        $newPath = $image->storeAs("uploads/$path", $file, ['disk' => $disk]);
+        return $image->storeAs("uploads/$path", $file, ['disk' => $disk]);
 
-        return $newPath;
+
+
     }
 
-    private function deleteImageFromLocal($image)
+    public function deleteImageFromLocal($imagePath)
     {
-        if (File::exists($image)) {
-            File::delete($image);
+        if ( File::exists($imagePath)) {
+            File::delete($imagePath);
         }
     }
 }

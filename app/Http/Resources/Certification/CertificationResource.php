@@ -17,7 +17,7 @@ class CertificationResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'image' => $this->image,
+            'image' => asset($this->image),
             'text' => $this->text,
             'date' => $this->date?->toDateString(),
             'order' => $this->order,

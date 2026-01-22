@@ -31,7 +31,7 @@ class CertificationRequest extends FormRequest
 
         if ($this->method() == 'PUT') {
             $data['name'] = 'sometimes|string|min:3|max:255';
-            $data['image'] = 'sometimes|string|max:500';
+            $data['image'] = 'sometimes|image|max:500';
             $data['text'] = 'sometimes|string|min:3';
             $data['date'] = 'sometimes|date';
             $data['order'] = 'sometimes|integer|min:0';
