@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
+use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
 
 class Project extends Model
 {
-    use HasFactory;
+    use HasFactory , Sluggable;
 
     protected $fillable = [
         'title',
@@ -41,5 +43,13 @@ class Project extends Model
     public function service(): BelongsTo
     {
         return $this->belongsTo(Service::class);
+    }
+    public function sluggable(): array
+    {
+        return [
+            'slug' => [
+                'source' => 'title'.Str::uuid()
+            ]
+        ];
     }
 }
