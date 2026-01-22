@@ -3,62 +3,66 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Services\EducationService;
+use App\Http\Requests\EducationRequest;
+use App\Http\Resources\Education\EducationResource;
+use App\Http\Resources\Education\EducationCollection;
 
 class EducationController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+    public function __construct(protected EducationService $educationService) {}
     public function index()
     {
-        //
+        $data = $this->educationService->getEducations();
+
+        if ($data->isEmpty()) {
+            return apiResponce(404, 'Not Found');
+        }
+
+        return apiResponce(200, 'Success', new EducationCollection($data));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function store(EducationRequest $request)
     {
-        //
+        $data = $request->validated();
+
+        $education = $this->educationService->store($data);
+
+        if (!$education) {
+            return apiResponce(400, 'Bad Request');
+        }
+
+        return apiResponce(200, 'Success',  EducationResource::make($education));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+
+    public function update(EducationRequest $request,  $id)
     {
-        //
+
+        $data = $request->validated();
+
+        if (!$this->educationService->update($data, $id)) {
+            return apiResponce(400, 'Bad Request');
+        }
+
+        $education = $this->educationService->getEducation($id);
+
+        if (!$education) {
+            return apiResponce(404, 'Not Found');
+        }
+        return apiResponce(200, 'Success',  EducationResource::make($education));
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function destroy($id)
     {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+        if (!$this->educationService->delete($id)) {
+            return apiResponce(400, 'Bad Request');
+        }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return apiResponce(200, 'Success');
     }
 }

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('certifications', function (Blueprint $table) {
             $table->id();
             $table->string('name', 255);
-            $table->string('avatar', 500)->nullable();   // path مثل /certificates/we.jpeg
+            $table->string('image', 500)->nullable();   // path مثل /certificates/we.jpeg
             $table->text('text');                        // وصف الشهادة
             $table->date('date')->nullable();            // 2025-01-01
             $table->unsignedInteger('order')->default(0);

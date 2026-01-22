@@ -2,63 +2,63 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\TeamRequest;
+use App\Http\Resources\Team\TeamCollection;
+use App\Http\Resources\Team\TeamResource;
+use App\Services\TeamService;
 
 class TeamController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+    public function __construct(protected TeamService $teamService) {}
     public function index()
     {
-        //
+        $data = $this->teamService->getTeams();
+
+        if ($data->isEmpty()) {
+            return apiResponce(404, 'Not Found');
+        }
+
+        return apiResponce(200, 'Success', new TeamCollection($data));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function store(TeamRequest $request)
     {
-        //
+        $data = $request->validated();
+
+        $team = $this->teamService->store($data);
+
+        if (!$team) {
+            return apiResponce(400, 'Bad Request');
+        }
+
+        return apiResponce(200, 'Success', TeamResource::make($team));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function update(TeamRequest $request, $id)
     {
-        //
+        $data = $request->validated();
+
+        if (!$this->teamService->update($data, $id)) {
+            return apiResponce(400, 'Bad Request');
+        }
+
+        $team = $this->teamService->getTeam($id);
+
+        if (!$team) {
+            return apiResponce(404, 'Not Found');
+        }
+        return apiResponce(200, 'Success', TeamResource::make($team));
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function destroy($id)
     {
-        //
-    }
+        if (!$this->teamService->delete($id)) {
+            return apiResponce(400, 'Bad Request');
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return apiResponce(200, 'Success');
     }
 }

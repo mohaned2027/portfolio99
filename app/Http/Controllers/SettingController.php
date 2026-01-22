@@ -2,63 +2,63 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\SettingRequest;
+use App\Http\Resources\Setting\SettingCollection;
+use App\Http\Resources\Setting\SettingResource;
+use App\Services\SettingService;
 
 class SettingController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+    public function __construct(protected SettingService $settingService) {}
     public function index()
     {
-        //
+        $data = $this->settingService->getSettings();
+
+        if ($data->isEmpty()) {
+            return apiResponce(404, 'Not Found');
+        }
+
+        return apiResponce(200, 'Success', new SettingCollection($data));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function store(SettingRequest $request)
     {
-        //
+        $data = $request->validated();
+
+        $setting = $this->settingService->store($data);
+
+        if (!$setting) {
+            return apiResponce(400, 'Bad Request');
+        }
+
+        return apiResponce(200, 'Success', SettingResource::make($setting));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function update(SettingRequest $request, $id)
     {
-        //
+        $data = $request->validated();
+
+        if (!$this->settingService->update($data, $id)) {
+            return apiResponce(400, 'Bad Request');
+        }
+
+        $setting = $this->settingService->getSetting($id);
+
+        if (!$setting) {
+            return apiResponce(404, 'Not Found');
+        }
+        return apiResponce(200, 'Success', SettingResource::make($setting));
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function destroy($id)
     {
-        //
-    }
+        if (!$this->settingService->delete($id)) {
+            return apiResponce(400, 'Bad Request');
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return apiResponce(200, 'Success');
     }
 }

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('skills', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->unsignedInteger('proficiency')->range(10, 100); // نسبة الإتقان من 0 إلى 100
+            $table->unsignedInteger('percentage')->range(10, 100); // نسبة الإتقان من 0 إلى 100
             $table->timestamps();
         });
     }

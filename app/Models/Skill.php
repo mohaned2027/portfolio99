@@ -11,10 +11,10 @@ class Skill extends Model
 
     protected $fillable = [
         'name',
-        'proficiency',
+        'percentage',
     ];
 
     protected $casts = [
-        'proficiency' => 'integer',
+        'percentage' => 'integer',
     ];
 }

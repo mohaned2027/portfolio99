@@ -2,63 +2,63 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\CertificationRequest;
+use App\Http\Resources\Certification\CertificationCollection;
+use App\Http\Resources\Certification\CertificationResource;
+use App\Services\CertificationService;
 
 class CertificateController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+    public function __construct(protected CertificationService $certificationService) {}
     public function index()
     {
-        //
+        $data = $this->certificationService->getCertifications();
+
+        if ($data->isEmpty()) {
+            return apiResponce(404, 'Not Found');
+        }
+
+        return apiResponce(200, 'Success', new CertificationCollection($data));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function store(CertificationRequest $request)
     {
-        //
+        $data = $request->validated();
+
+        $certification = $this->certificationService->store($data);
+
+        if (!$certification) {
+            return apiResponce(400, 'Bad Request');
+        }
+
+        return apiResponce(200, 'Success', CertificationResource::make($certification));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function update(CertificationRequest $request, $id)
     {
-        //
+        $data = $request->validated();
+
+        if (!$this->certificationService->update($data, $id)) {
+            return apiResponce(400, 'Bad Request');
+        }
+
+        $certification = $this->certificationService->getCertification($id);
+
+        if (!$certification) {
+            return apiResponce(404, 'Not Found');
+        }
+        return apiResponce(200, 'Success', CertificationResource::make($certification));
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function destroy($id)
     {
-        //
-    }
+        if (!$this->certificationService->delete($id)) {
+            return apiResponce(400, 'Bad Request');
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return apiResponce(200, 'Success');
     }
 }

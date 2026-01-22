@@ -3,62 +3,66 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Services\SkillService;
+use App\Http\Requests\SkillRequest;
+use App\Http\Resources\Skill\SkillCollection;
+use App\Http\Resources\Skill\SkillResources;
 
 class SkillController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+    public function __construct(protected SkillService $skillService) {}
     public function index()
     {
-        //
+        $data = $this->skillService->getSkills();
+
+        if ($data->isEmpty()) {
+            return apiResponce(404, 'Not Found');
+        }
+
+        return apiResponce(200, 'Success', new SkillCollection($data));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function store(SkillRequest $request)
     {
-        //
+        $data = $request->validated();
+
+        $skill = $this->skillService->store($data);
+
+        if (!$skill) {
+            return apiResponce(400, 'Bad Request');
+        }
+
+        return apiResponce(200, 'Success',  SkillResources::make($skill));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+
+    public function update(SkillRequest $request,  $id)
     {
-        //
+
+        $data = $request->validated();
+
+        if (!$this->skillService->update($data, $id)) {
+            return apiResponce(400, 'Bad Request');
+        }
+
+        $skill = $this->skillService->getSkill($id);
+
+        if (!$skill) {
+            return apiResponce(404, 'Not Found');
+        }
+        return apiResponce(200, 'Success',  SkillResources::make($skill));
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function destroy($id)
     {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+        if (!$this->skillService->delete($id)) {
+            return apiResponce(400, 'Bad Request');
+        }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return apiResponce(200, 'Success');
     }
 }

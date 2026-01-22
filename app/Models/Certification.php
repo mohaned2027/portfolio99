@@ -11,7 +11,7 @@ class Certification extends Model
 
     protected $fillable = [
         'name',
-        'avatar',
+        'image',
         'text',
         'date',
         'order',

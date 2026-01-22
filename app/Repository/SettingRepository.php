@@ -2,13 +2,32 @@
 
 namespace App\Repository;
 
+use App\Models\Setting;
+
 class SettingRepository
 {
-    /**
-     * Create a new class instance.
-     */
-    public function __construct()
+    public function getSettings()
     {
-        //
+        return Setting::get();
+    }
+
+    public function getSetting($id)
+    {
+        return Setting::find($id);
+    }
+
+    public function store($data)
+    {
+        return Setting::create($data);
+    }
+
+    public function update($setting, $data)
+    {
+        return $setting->update($data);
+    }
+
+    public function delete($setting)
+    {
+        return $setting->delete();
     }
 }
