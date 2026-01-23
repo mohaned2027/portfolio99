@@ -28,6 +28,8 @@ class SettingController extends Controller
     {
         $data = $request->validated();
 
+
+
         $setting = $this->settingService->store($data);
 
         if (!$setting) {

@@ -25,7 +25,7 @@ class SettingRequest extends FormRequest
             'company' => 'required|string|min:2|max:255',
             'logo' => 'required|image|max:500',
             'favicon' => 'required|image|max:500',
-            'cv' => 'required|file|mimes:pdf|max:2048',
+            'cv' => 'required|file|mimes:pdf|max:50000',
         ];
 
         if ($this->method() == 'PUT') {

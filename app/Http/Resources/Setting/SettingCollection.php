@@ -16,7 +16,6 @@ class SettingCollection extends ResourceCollection
     {
         return [
             'settings' => SettingResource::collection($this->collection),
-            'count' => $this->count(),
         ];
     }
 }
