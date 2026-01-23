@@ -22,14 +22,14 @@ class ProjectRequest extends FormRequest
     public function rules(): array
     {
         $data = [
-            'title' => 'required|string|min:3|max:255',
-            'short_desc' => 'required|string|min:3|max:255',
-            'desc' => 'required|string|min:3',
-            'image_cover' => 'required|string|max:255',
-            'images' => 'required|array',
+            'title' => 'nullable|string|min:3|max:255',
+            'short_desc' => 'nullable|string|min:3|max:255',
+            'desc' => 'nullable|string|min:3',
+            'image_cover' => 'nullable|image|max:255',
+            'images' => 'nullable|array',
             'link' => 'nullable|string|max:255',
             'github' => 'nullable|string|max:255',
-            'technologies' => 'required|array',
+            'technologies' => 'nullable|array',
             'status' => 'nullable|boolean',
             'team_id' => 'nullable|integer|exists:teams,id',
             'service_id' => 'nullable|integer|exists:services,id',
@@ -39,7 +39,7 @@ class ProjectRequest extends FormRequest
             $data['title'] = 'sometimes|string|min:3|max:255';
             $data['short_desc'] = 'sometimes|string|min:3|max:255';
             $data['desc'] = 'sometimes|string|min:3';
-            $data['image_cover'] = 'sometimes|string|max:255';
+            $data['image_cover'] = 'sometimes|image|max:255';
             $data['images'] = 'sometimes|array';
             $data['link'] = 'sometimes|nullable|string|max:255';
             $data['github'] = 'sometimes|nullable|string|max:255';

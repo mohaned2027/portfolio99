@@ -14,14 +14,16 @@ class ProjectResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+
         return [
             'id' => $this->id,
             'title' => $this->title,
             'slug' => $this->slug,
             'short_desc' => $this->short_desc,
             'desc' => $this->desc,
-            'image_cover' => $this->image_cover,
-            'images' => $this->images,
+            'image_cover' => asset($this->image_cover),
+            'images' => collect($this->images)->map(fn ($img) => asset($img)),
+            // 'images' => array_map(fn ($img) => asset($img), $this->images),
             'link' => $this->link,
             'github' => $this->github,
             'technologies' => $this->technologies,

@@ -13,16 +13,16 @@ return new class extends Migration
     {
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->string('slug');
-            $table->string('short_desc');
-            $table->text('desc');
-            $table->string('image_cover');
-            $table->json('images');
+            $table->string('title')->nullable();
+            $table->string('slug')->nullable();
+            $table->string('short_desc')->nullable();
+            $table->text('desc')->nullable();
+            $table->string('image_cover')->nullable();
+            $table->json('images')->nullable();
             $table->string('link')->nullable();
             $table->string('github')->nullable();
-            $table->json('technologies');
-            $table->boolean('status')->default(true);
+            $table->json('technologies')->nullable();
+            $table->boolean('status')->default(true)->nullable();
 
             $table->foreignId('team_id')->nullable()->constrained('teams')->nullOnDelete();
             $table->foreignId('service_id')->nullable()->constrained('services')->nullOnDelete();

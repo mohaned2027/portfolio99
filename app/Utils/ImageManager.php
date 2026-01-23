@@ -30,13 +30,21 @@ class ImageManager
 
         return $image->storeAs("uploads/$path", $file, ['disk' => $disk]);
 
-
-
     }
 
     public function deleteImageFromLocal($imagePath)
     {
-        if ( File::exists($imagePath)) {
+        if (is_array($imagePath)) {
+            foreach ($imagePath as $path) {
+                if (File::exists($path)) {
+                    File::delete($path);
+                }
+            }
+
+            return;
+        }
+
+        if ($imagePath && File::exists($imagePath)) {
             File::delete($imagePath);
         }
     }
