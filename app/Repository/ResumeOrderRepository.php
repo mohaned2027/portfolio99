@@ -11,23 +11,13 @@ class ResumeOrderRepository
         return ResumeOrder::get();
     }
 
-    public function getResumeOrder($id)
+    public function getResumeOrder()
     {
-        return ResumeOrder::find($id);
-    }
-
-    public function store($data)
-    {
-        return ResumeOrder::create($data);
+        return ResumeOrder::first();
     }
 
     public function update($resumeOrder, $data)
     {
         return $resumeOrder->update($data);
-    }
-
-    public function delete($resumeOrder)
-    {
-        return $resumeOrder->delete();
     }
 }

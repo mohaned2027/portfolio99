@@ -13,27 +13,18 @@ class ResumeOrderService
         return $this->resumeOrderRepository->getResumeOrders();
     }
 
-    public function getResumeOrder($id)
+    public function getResumeOrder()
     {
-        return $this->resumeOrderRepository->getResumeOrder($id) ?? false;
+        return $this->resumeOrderRepository->getResumeOrder() ?? false;
     }
 
-    public function store($data)
+    public function update($data)
     {
-        return $this->resumeOrderRepository->store($data);
-    }
+        $resumeOrder = $this->resumeOrderRepository->getResumeOrder();
+        if (! $resumeOrder) {
+            return false;
+        }
 
-    public function update($data, $id)
-    {
-        $resumeOrder = $this->resumeOrderRepository->getResumeOrder($id);
-        if (!$resumeOrder) return false;
         return $this->resumeOrderRepository->update($resumeOrder, $data);
-    }
-
-    public function delete($id)
-    {
-        $resumeOrder = $this->resumeOrderRepository->getResumeOrder($id);
-        if (!$resumeOrder) return false;
-        return $this->resumeOrderRepository->delete($resumeOrder);
     }
 }

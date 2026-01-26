@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\Password\ForgetPasswordController;
+use App\Http\Controllers\Auth\Password\OtpController;
+use App\Http\Controllers\Auth\Password\ResetPasswordController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\ContactUsController;
@@ -32,6 +35,9 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::post('/auth/login', [LoginController::class, 'login']);
+Route::post('/auth/forgot-password', [ForgetPasswordController::class, 'send']);
+Route::post('/auth/verify-otp', [OtpController::class, 'verify']);
+Route::post('/auth/reset-password', [ResetPasswordController::class, 'reset']);
 Route::post('/contact-us/store', [ContactUsController::class, 'store']);
 Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
 
@@ -112,11 +118,9 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     });
 
     // Resume Orders
-    Route::controller(ResumeOrderController::class)->prefix('resume-order')->group(function () {
+    Route::controller(ResumeOrderController::class)->prefix('resume')->group(function () {
         Route::get('/', 'index');
-        Route::post('/store', 'store');
-        Route::put('/update/{id}', 'update');
-        Route::delete('/delete/{id}', 'destroy');
+        Route::put('/reorder', 'update');
     });
 
     // Contact Us

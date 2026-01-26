@@ -25,42 +25,20 @@ class ResumeOrderController extends Controller
         return apiResponce(200, 'Success', new ResumeOrderCollection($data));
     }
 
-    public function store(ResumeOrderRequest $request)
+    public function update(ResumeOrderRequest $request )
     {
         $data = $request->validated();
+        $id = auth()->user()->id;
 
-        $resumeOrder = $this->resumeOrderService->store($data);
-
-        if (!$resumeOrder) {
+        if (! $this->resumeOrderService->update($data, $id)) {
             return apiResponce(400, 'Bad Request');
         }
-
-        return apiResponce(200, 'Success', ResumeOrderResource::make($resumeOrder));
-    }
-
-    public function update(ResumeOrderRequest $request, $id)
-    {
-        $data = $request->validated();
-
-        if (!$this->resumeOrderService->update($data, $id)) {
-            return apiResponce(400, 'Bad Request');
-        }
-
         $resumeOrder = $this->resumeOrderService->getResumeOrder($id);
 
-        if (!$resumeOrder) {
+        if (! $resumeOrder) {
             return apiResponce(404, 'Not Found');
         }
 
         return apiResponce(200, 'Success', ResumeOrderResource::make($resumeOrder));
-    }
-
-    public function destroy($id)
-    {
-        if (!$this->resumeOrderService->delete($id)) {
-            return apiResponce(400, 'Bad Request');
-        }
-
-        return apiResponce(200, 'Success');
     }
 }

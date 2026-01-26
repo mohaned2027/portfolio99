@@ -75,5 +75,13 @@ class UserService
         return $user->fresh();
     }
 
+    public function checkEmail($email)
+    {
+        $user = $this->userRepository->getUserByEmail($email);
+        if (! $user) {
+            return false;
+        }
 
+        return $user;
+    }
 }

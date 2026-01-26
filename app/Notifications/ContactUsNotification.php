@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\ContactUs;
+use App\Models\Setting;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -32,14 +33,17 @@ class ContactUsNotification extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
+        $setting = Setting::query()->first();
+        $companyName = $setting?->company ?: config('app.name');
+        $faviconUrl = $setting?->favicon ? asset($setting->favicon) : null;
+
         return (new MailMessage)
             ->subject('New Contact Us Message')
-            ->line('A new Contact Us message has been received.')
-            ->line('Name: '.$this->contactUs->name)
-            ->line('Email: '.$this->contactUs->email)
-            ->line('Subject: '.$this->contactUs->subject)
-            ->line('Message:')
-            ->line($this->contactUs->message);
+            ->view('emails.contact-us', [
+                'contactUs' => $this->contactUs,
+                'companyName' => $companyName,
+                'faviconUrl' => $faviconUrl,
+            ]);
     }
 
     /**

@@ -15,7 +15,6 @@ class ResumeOrderResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
             'order' => $this->order,
         ];
     }

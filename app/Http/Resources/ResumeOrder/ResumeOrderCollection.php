@@ -14,9 +14,10 @@ class ResumeOrderCollection extends ResourceCollection
      */
     public function toArray(Request $request): array
     {
+        $resumeOrder = $this->collection->first();
+
         return [
-            'resume_orders' => ResumeOrderResource::collection($this->collection),
-            'count' => $this->count(),
+            'order' => $resumeOrder ? $resumeOrder->order : [],
         ];
     }
 }
