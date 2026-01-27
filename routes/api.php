@@ -39,6 +39,8 @@ Route::post('/auth/forgot-password', [ForgetPasswordController::class, 'send']);
 Route::post('/auth/verify-otp', [OtpController::class, 'verify']);
 Route::post('/auth/reset-password', [ResetPasswordController::class, 'reset']);
 Route::post('/contact-us/store', [ContactUsController::class, 'store']);
+
+
 Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
 
     Route::get('/user', [UserController::class, 'index']);
@@ -89,6 +91,7 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::controller(ProjectController::class)->prefix('portfolio')->group(function () {
         Route::get('/', 'index');
         Route::post('/store', 'store');
+        Route::get('/show/{id}', 'show');
         Route::put('/update/{id}', 'update');
         Route::delete('/delete/{id}', 'destroy');
     });
@@ -97,8 +100,7 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::controller(SettingController::class)->prefix('setting')->group(function () {
         Route::get('/', 'index');
         Route::post('/store', 'store');
-        Route::put('/update/{id}', 'update');
-        Route::delete('/delete/{id}', 'destroy');
+        Route::put('/update', 'update');
     });
 
     // Team

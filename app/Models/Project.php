@@ -6,6 +6,7 @@ use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Str;
 
 class Project extends Model
@@ -23,7 +24,6 @@ class Project extends Model
         'github',
         'technologies',
         'status',
-        'team_id',
         'service_id',
     ];
 
@@ -31,14 +31,15 @@ class Project extends Model
         'images' => 'array',
         'technologies' => 'array',
         'status' => 'boolean',
-        'team_id' => 'integer',
         'service_id' => 'integer',
     ];
 
-    public function team(): BelongsTo
+    public function teams()
     {
-        return $this->belongsTo(Team::class);
+        return $this->belongsToMany(Team::class , 'team_projects' , 'project_id' , 'team_id');
     }
+
+
 
     public function service(): BelongsTo
     {
@@ -48,7 +49,7 @@ class Project extends Model
     {
         return [
             'slug' => [
-                'source' => 'title'.Str::uuid()
+                'source' => 'title'
             ]
         ];
     }

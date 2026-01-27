@@ -39,15 +39,15 @@ class SettingController extends Controller
         return apiResponce(200, 'Success', SettingResource::make($setting));
     }
 
-    public function update(SettingRequest $request, $id)
+    public function update(SettingRequest $request)
     {
         $data = $request->validated();
 
-        if (!$this->settingService->update($data, $id)) {
+        if (!$this->settingService->update($data)) {
             return apiResponce(400, 'Bad Request');
         }
 
-        $setting = $this->settingService->getSetting($id);
+        $setting = $this->settingService->getFirstSetting();
 
         if (!$setting) {
             return apiResponce(404, 'Not Found');
@@ -55,12 +55,5 @@ class SettingController extends Controller
         return apiResponce(200, 'Success', SettingResource::make($setting));
     }
 
-    public function destroy($id)
-    {
-        if (!$this->settingService->delete($id)) {
-            return apiResponce(400, 'Bad Request');
-        }
-
-        return apiResponce(200, 'Success');
-    }
+ 
 }

@@ -22,6 +22,11 @@ class SettingService
         return $this->settingRepository->getSetting($id) ?? false;
     }
 
+    public function getFirstSetting()
+    {
+        return $this->settingRepository->getFirstSetting() ?? false;
+    }
+
     public function store($data)
     {
         if (isset($data['logo'])) {
@@ -48,9 +53,9 @@ class SettingService
         return $this->settingRepository->store($data);
     }
 
-    public function update($data, $id)
+    public function update($data)
     {
-        $setting = $this->settingRepository->getSetting($id);
+        $setting = $this->settingRepository->getFirstSetting();
         if (! $setting) {
             return false;
         }

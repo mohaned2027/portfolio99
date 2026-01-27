@@ -22,17 +22,17 @@ class ProjectRequest extends FormRequest
     public function rules(): array
     {
         $data = [
-            'title' => 'nullable|string|min:3|max:255',
-            'short_desc' => 'nullable|string|min:3|max:255',
-            'desc' => 'nullable|string|min:3',
-            'image_cover' => 'nullable|image|max:255',
-            'images' => 'nullable|array',
-            'link' => 'nullable|string|max:255',
-            'github' => 'nullable|string|max:255',
-            'technologies' => 'nullable|array',
-            'status' => 'nullable|boolean',
-            'team_id' => 'nullable|integer|exists:teams,id',
-            'service_id' => 'nullable|integer|exists:services,id',
+            'title' => 'require|string|min:3|max:255',
+            'short_desc' => 'require|string|min:3|max:255',
+            'desc' => 'require|string|min:3',
+            'image_cover' => 'require|image|max:255',
+            'images' => 'require|array',
+            'link' => 'require|string|max:255',
+            'github' => 'require|string|max:255',
+            'technologies' => 'require|array',
+            'status' => 'require|boolean',
+            'teams' => 'require|array',
+            'service_id' => 'require|integer|exists:services,id',
         ];
 
         if ($this->method() == 'PUT') {
@@ -41,12 +41,13 @@ class ProjectRequest extends FormRequest
             $data['desc'] = 'sometimes|string|min:3';
             $data['image_cover'] = 'sometimes|image|max:255';
             $data['images'] = 'sometimes|array';
-            $data['link'] = 'sometimes|nullable|string|max:255';
-            $data['github'] = 'sometimes|nullable|string|max:255';
+            $data['link'] = 'sometimes|string|max:255';
+            $data['github'] = 'sometimes|string|max:255';
             $data['technologies'] = 'sometimes|array';
-            $data['status'] = 'sometimes|nullable|boolean';
-            $data['team_id'] = 'sometimes|nullable|integer|exists:teams,id';
-            $data['service_id'] = 'sometimes|nullable|integer|exists:services,id';
+            $data['status'] = 'sometimes|boolean';
+            $data['teams'] = 'sometimes|array';
+            $data['teams.*'] = 'sometimes|integer|exists:teams,id';
+            $data['service_id'] = 'sometimes|integer|exists:services,id';
         }
 
         return $data;

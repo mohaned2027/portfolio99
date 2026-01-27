@@ -13,6 +13,7 @@ class ProjectController extends Controller
      * Display a listing of the resource.
      */
     public function __construct(protected ProjectService $projectService) {}
+
     public function index()
     {
         $data = $this->projectService->getProjects();
@@ -28,10 +29,22 @@ class ProjectController extends Controller
     {
         $data = $request->validated();
 
+
         $project = $this->projectService->store($data);
 
-        if (!$project) {
+        if (! $project) {
             return apiResponce(400, 'Bad Request');
+        }
+
+        return apiResponce(200, 'Success', ProjectResource::make($project));
+    }
+
+    public function show($id)
+    {
+        $project = $this->projectService->getProject($id);
+
+        if (! $project) {
+            return apiResponce(404, 'Not Found');
         }
 
         return apiResponce(200, 'Success', ProjectResource::make($project));
@@ -41,21 +54,22 @@ class ProjectController extends Controller
     {
         $data = $request->validated();
 
-        if (!$this->projectService->update($data, $id)) {
+        if (! $this->projectService->update($data, $id)) {
             return apiResponce(400, 'Bad Request');
         }
 
         $project = $this->projectService->getProject($id);
 
-        if (!$project) {
+        if (! $project) {
             return apiResponce(404, 'Not Found');
         }
+
         return apiResponce(200, 'Success', ProjectResource::make($project));
     }
 
     public function destroy($id)
     {
-        if (!$this->projectService->delete($id)) {
+        if (! $this->projectService->delete($id)) {
             return apiResponce(400, 'Bad Request');
         }
 

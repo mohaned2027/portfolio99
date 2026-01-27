@@ -18,7 +18,7 @@ class TeamResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'track' => $this->track,
-            'logo' => $this->logo,
+            'logo' => asset($this->logo),
             'url' => $this->url,
         ];
     }

@@ -8,7 +8,7 @@ class ProjectRepository
 {
     public function getProjects()
     {
-        return Project::get();
+        return Project::with(['teams' , 'service'])->get();
     }
 
     public function getProject($id)
@@ -29,5 +29,10 @@ class ProjectRepository
     public function delete($project)
     {
         return $project->delete();
+    }
+
+    public function createProjectTeams($project, $teams)
+    {
+        return $project->teams()->sync($teams);
     }
 }

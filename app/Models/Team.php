@@ -2,9 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Team extends Model
 {
@@ -17,8 +16,8 @@ class Team extends Model
         'url',
     ];
 
-    public function projects(): HasMany
+    public function projects()
     {
-        return $this->hasMany(Project::class);
+        return $this->belongsToMany(Project::class , 'team_projects' , 'team_id' , 'project_id');
     }
 }

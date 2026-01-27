@@ -40,7 +40,23 @@ class ProjectService
             }
         }
 
-        return $this->projectRepository->store($data);
+        $project = $this->projectRepository->store($data);
+
+
+        if (! $project) {
+            return false;
+        }
+
+        $projectTeams = $this->projectRepository->createProjectTeams($project, $data['teams']);
+
+        if (! $projectTeams) {
+            return false;
+        }
+
+        $dataProject =  $project->fresh('teams')->load('teams') ;
+
+        return $dataProject;
+
     }
 
     public function update($data, $id)

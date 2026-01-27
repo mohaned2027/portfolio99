@@ -24,14 +24,14 @@ class TeamRequest extends FormRequest
         $data = [
             'name' => 'required|string|min:2|max:255',
             'track' => 'required|string|min:2|max:255',
-            'logo' => 'nullable|string|max:255',
+            'logo' =>  'required|image|mimes:jpg,jpeg,png,webp|max:2048',
             'url' => 'required|string|max:255',
         ];
 
         if ($this->method() == 'PUT') {
             $data['name'] = 'sometimes|string|min:2|max:255';
             $data['track'] = 'sometimes|string|min:2|max:255';
-            $data['logo'] = 'sometimes|nullable|string|max:255';
+            $data['logo'] = 'sometimes|image|mimes:jpg,jpeg,png,webp|max:2048';
             $data['url'] = 'sometimes|string|max:255';
         }
 

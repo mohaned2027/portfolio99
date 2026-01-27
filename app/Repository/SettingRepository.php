@@ -16,6 +16,11 @@ class SettingRepository
         return Setting::find($id);
     }
 
+    public function getFirstSetting()
+    {
+        return Setting::query()->first();
+    }
+
     public function store($data)
     {
         return Setting::create($data);

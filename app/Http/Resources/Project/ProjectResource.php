@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Project;
 
+use App\Http\Resources\Team\TeamResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -28,8 +29,9 @@ class ProjectResource extends JsonResource
             'github' => $this->github,
             'technologies' => $this->technologies,
             'status' => $this->status,
-            'team_id' => $this->team_id,
-            'service_id' => $this->service_id,
+            // 'teams' => $this->whenLoaded('teams', fn () => TeamResource::collection($this->teams->pluck('id'))),
+            'teams' => $this->whenLoaded('teams', fn () => $this->teams->pluck('id')),
+            'service' => $this->whenLoaded('service', fn () => $this->service->id),
         ];
     }
 }
