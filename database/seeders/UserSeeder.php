@@ -12,19 +12,25 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+        $faker = fake();
+
         User::create([
-            'name' => 'mohanad',
-            'title' => 'ndksnk',
-            'avatar' => '',
-            'email' => 'mo@g.com',
-            'phone' => '0123456789',
+            'name' => $faker->name(),
+            'title' => $faker->jobTitle(),
+            'avatar' => $faker->imageUrl(300, 300, 'people'),
+            'email' => "mo@g.c",
+            'phone' => $faker->phoneNumber(),
             'password' => '12345678',
-            'birthday' => '30-9-2004',
-            'location' => 'cairo',
-            'about' => 'ndknaskndksa',
-            'map_embed' => 'ksjandksna',
-            'social_links' => [],
-            'email_contact' => 'mohandahmed015529.222.00@gmail.com',
+            'birthday' => $faker->date(),
+            'location' => $faker->city(),
+            'about' => $faker->paragraph(),
+            'map_embed' => $faker->url(),
+            'social_links' => [
+                'facebook' => $faker->url(),
+                'linkedin' => $faker->url(),
+                'github' => $faker->url(),
+            ],
+            'contact_email' => $faker->unique()->safeEmail(),
         ]);
     }
 }

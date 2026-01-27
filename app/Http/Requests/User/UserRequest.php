@@ -35,16 +35,16 @@ class UserRequest extends FormRequest
             $data = [
                 'name' => 'sometimes|string|min:3|max:255',
                 'title' => 'sometimes|string|min:3|max:255',
-                'avatar' => 'sometimes|image|max:500',
+                'avatar' => 'sometimes|image|mimes:jpg,jpeg,png, webp ,svg , gif|max:2048',
                 'email' => [
                     'sometimes',
                     'email',
                     Rule::unique('users', 'email')->ignore($this->user()?->id),
                 ],
-                'email_contact' => [
+                'contact_email' => [
                     'sometimes',
                     'email',
-                    Rule::unique('users', 'email_contact')->ignore($this->user()?->id),
+                    Rule::unique('users', 'contact_email')->ignore($this->user()?->id),
                 ],
                 'phone' => 'sometimes|string|min:6|max:30',
                 'birthday' => 'sometimes|date',

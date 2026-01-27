@@ -46,6 +46,7 @@ Route::get('/user', [UserController::class, 'index']);
 Route::get('/service', [ServiceController::class, 'index']);
 // Portfolio
 Route::get('/portfolio', [ProjectController::class, 'index']);
+Route::get('/portfolio/show/{id}', [ProjectController::class, 'show']);
 // Settings
 Route::get('/setting', [SettingController::class, 'index']);
 // Teams

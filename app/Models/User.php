@@ -31,7 +31,7 @@ class User extends Authenticatable
         'password',
         'social_links',
         'map_embed',
-        'email_contact',
+        'contact_email',
     ];
 
     /**

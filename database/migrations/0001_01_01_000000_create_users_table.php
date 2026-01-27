@@ -34,7 +34,7 @@ return new class extends Migration
             $table->json('social_links');
 
             // Email Contact
-            $table->string('email_contact')->unique();
+            $table->string('contact_email')->unique();
 
             // Map
             $table->text('map_embed');
