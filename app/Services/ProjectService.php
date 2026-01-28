@@ -77,6 +77,7 @@ class ProjectService
         // =========================
         $oldImagesFromRequest = $data['images'] ?? null;
 
+        // لو الفرونت مش باعت images خالص، يبقى حافظ على اللي في DB
         $oldImages = is_array($oldImagesFromRequest) ? $oldImagesFromRequest : ($project->images ?? []);
         if (! is_array($oldImages)) {
             $oldImages = [];
@@ -103,6 +104,7 @@ class ProjectService
 
         // =========================
         // 3) Optional: delete removed images from storage
+        // (يحذف الصور اللي كانت في DB واتشالت من UI)
         // =========================
         if (is_array($oldImagesFromRequest)) {
             $current = is_array($project->images) ? $project->images : [];
@@ -110,11 +112,11 @@ class ProjectService
             if (! empty($toDelete)) {
                 $this->imageManager->deleteImageFromLocal(array_values($toDelete));
             }
-            
         }
 
         // =========================
         // 4) Merge (no override)
+        // old + new  (الجديد يتضاف آخر الليست)
         // =========================
         $finalImages = array_values(array_merge($oldImages, $newImages));
 
@@ -144,11 +146,11 @@ class ProjectService
         // =========================
         // 6) Sync teams لو موجودة
         // =========================
-        if (array_key_exists('teams', $data)) {
-            $teams = is_array($data['teams']) ? $data['teams'] : [];
-            $teams = array_values(array_filter($teams, fn ($v) => is_numeric($v)));
-            $teams = array_map('intval', $teams);
-            $project->teams()->sync($teams);
+        // لو teams_present موجودة يبقى لازم sync حتى لو teams فاضية
+        if (array_key_exists('teams_present', $data)) {
+            $teams = $data['teams'] ?? [];
+            $teams = is_array($teams) ? $teams : [];
+            $project->teams()->sync($teams); // [] => يمسح الكل
         }
 
         return true;

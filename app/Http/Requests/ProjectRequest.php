@@ -36,14 +36,14 @@ class ProjectRequest extends FormRequest
             'image_cover' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
             'images' => 'required|array',
             'images.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048',
-            'link' => 'required|string|max:255',
+            'link' => 'nullable|string|max:255',
             'github' => 'required|string|max:255',
             'technologies' => 'required|array',
             'technologies.*' => 'string',
             'status' => 'required|boolean',
-            'teams' => 'required|array',
-            'teams.*' => 'integer|exists:teams,id',
-            'service_id' => 'nullable|integer|exists:services,id',
+            'teams' => 'nullable|array',
+            'teams.*' => 'nullable|integer|exists:teams,id',
+            'service_id' => 'required|integer|exists:services,id',
         ];
 
         if ($this->method() == 'PUT') {
@@ -59,15 +59,20 @@ class ProjectRequest extends FormRequest
             $data['desc'] = 'sometimes|string|min:3';
             $data['image_cover'] = 'sometimes|image|mimes:jpg,jpeg,png,webp|max:2048';
             $data['images'] = 'sometimes|array';
-            $data['images.*'] = 'sometimes|image|mimes:jpg,jpeg,png,webp|max:2048';
-            $data['link'] = 'sometimes|string|max:255';
-            $data['github'] = 'sometimes|string|max:255';
+            $data['images.*'] = 'nullable|string';
+
+            $data['images_files'] = 'sometimes|array';
+            $data['images_files.*'] = 'sometimes|image|mimes:jpg,jpeg,png,webp|max:2048';
+
+            $data['link'] = 'nullable|string|max:255';
+            $data['github'] = 'nullable|string|max:255';
             $data['technologies'] = 'sometimes|array';
             $data['technologies.*'] = 'sometimes|string';
             $data['status'] = 'sometimes|boolean';
-            $data['teams'] = 'sometimes|array';
-            $data['teams.*'] = 'sometimes|integer|exists:teams,id';
-            $data['service_id'] = 'sometimes|nullable|integer|exists:services,id';
+            $data['teams_present'] = 'nullable|in:1';
+            $data['teams'] = 'nullable|array';
+            $data['teams.*'] = 'nullable|integer|exists:teams,id';
+            $data['service_id'] = 'sometimes|integer|exists:services,id';
         }
 
         return $data;
