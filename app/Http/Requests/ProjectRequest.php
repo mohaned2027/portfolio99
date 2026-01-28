@@ -36,7 +36,7 @@ class ProjectRequest extends FormRequest
             'images' => 'required|array',
             'images.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048',
             'link' => 'nullable|string|max:255',
-            'github' => 'required|string|max:255',
+            'github' => 'nullable|string|max:255',
             'technologies' => 'required|array',
             'technologies.*' => 'string',
             'status' => 'required|boolean',
