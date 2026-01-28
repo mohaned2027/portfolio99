@@ -33,7 +33,6 @@ class ProjectRequest extends FormRequest
             ],
             'short_desc' => 'required|string|min:3|max:255',
             'desc' => 'required|string|min:3',
-            'image_cover' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
             'images' => 'required|array',
             'images.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048',
             'link' => 'nullable|string|max:255',
