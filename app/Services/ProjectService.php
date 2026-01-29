@@ -22,132 +22,101 @@ class ProjectService
 
     public function store($data)
     {
-        // Image Cover Upload
-        if (isset($data['images'])) {
-            foreach ($data['images'] as $key => $image) {
-                $data['images'][$key] = $this->imageManager->uploadSingleImage($image, 'projects', 'store');
-                if (! $data['images'][$key]) {
-                    return false;
+        // Handle images array (could be files or strings if copied, but usually files in store)
+        if (isset($data['images']) && is_array($data['images'])) {
+            $uploadedImages = [];
+            foreach ($data['images'] as $image) {
+                if ($image instanceof UploadedFile) {
+                    $path = $this->imageManager->uploadSingleImage($image, 'projects', 'store');
+                    if ($path) {
+                        $uploadedImages[] = $path;
+                    }
                 }
             }
-            $data['images'] = array_values($data['images']);
-
+            $data['images'] = $uploadedImages;
         }
 
-        // Image Cover
-        if (! isset($data['image_cover']) && ! empty($data['images'])) {
+        // Set image_cover to the first image if not provided
+        if (!isset($data['image_cover']) && !empty($data['images'])) {
             $data['image_cover'] = $data['images'][0];
-        }
-
-        if (isset($data['image_cover']) && $data['image_cover'] instanceof UploadedFile) {
-            $data['image_cover'] = $this->imageManager->uploadSingleImage($data['image_cover'], 'project', 'store');
-            if (! $data['image_cover']) {
-                return false;
-            }
         }
 
         $project = $this->projectRepository->store($data);
 
-        if (! $project) {
+        if (!$project) {
             return false;
         }
 
         $teams = $data['teams'] ?? [];
-        $projectTeams = $this->projectRepository->createProjectTeams($project, $teams);
+        $this->projectRepository->createProjectTeams($project, $teams);
 
-        if (! $projectTeams) {
-            return false;
-        }
-
-        $dataProject = $project->fresh('teams')->load('teams');
-
-        return $dataProject;
-
+        return $project->fresh(['teams', 'service']);
     }
 
     public function update($data, $id)
     {
         $project = $this->projectRepository->getProject($id);
-        if (! $project) {
+        if (!$project) {
             return false;
         }
 
-        // =========================
-        // 1) Old images from request (strings)
-        // =========================
-        $oldImagesFromRequest = $data['images'] ?? null;
-
-        $oldImages = is_array($oldImagesFromRequest) ? $oldImagesFromRequest : ($project->images ?? []);
-        if (! is_array($oldImages)) {
-            $oldImages = [];
+        // 1. Get existing images from request (these are the ones the user kept)
+        $keptImages = $data['images'] ?? [];
+        if (!is_array($keptImages)) {
+            $keptImages = [];
         }
+        // Filter out empty strings or non-string values
+        $keptImages = array_values(array_filter($keptImages, fn($v) => is_string($v) && trim($v) !== ''));
 
-        // نظّف القيم الفاضية
-        $oldImages = array_values(array_filter($oldImages, fn ($v) => is_string($v) && trim($v) !== ''));
-
-        // =========================
-        // 2) Upload new files (images_files[])
-        // =========================
+        // 2. Upload new image files
         $newImages = [];
         if (isset($data['images_files']) && is_array($data['images_files'])) {
             foreach ($data['images_files'] as $file) {
                 if ($file instanceof UploadedFile) {
                     $path = $this->imageManager->uploadSingleImage($file, 'projects', 'store');
-                    if (! $path) {
-                        return false;
+                    if ($path) {
+                        $newImages[] = $path;
                     }
-                    $newImages[] = $path;
                 }
             }
         }
 
-        // =========================
-        // 3) Optional: delete removed images from storage
-        // =========================
-        if (is_array($oldImagesFromRequest)) {
-            $current = is_array($project->images) ? $project->images : [];
-            $toDelete = array_diff($current, $oldImages); // اللي اتشال من الواجهة
-            if (! empty($toDelete)) {
-                $this->imageManager->deleteImageFromLocal(array_values($toDelete));
-            }
-
+        // 3. Delete removed images from storage
+        $currentImages = is_array($project->images) ? $project->images : [];
+        $removedImages = array_diff($currentImages, $keptImages);
+        if (!empty($removedImages)) {
+            $this->imageManager->deleteImageFromLocal(array_values($removedImages));
         }
 
-        // =========================
-        // 4) Merge (no override)
-        // =========================
-        $finalImages = array_values(array_merge($oldImages, $newImages));
-
+        // 4. Merge kept and new images
+        $finalImages = array_values(array_merge($keptImages, $newImages));
         $data['images'] = $finalImages;
 
-        // cover = أول صورة
-        if (! empty($finalImages)) {
-            $data['image_cover'] = $finalImages[0];
-
-            // لو cover اتغير احذف القديم
-            if ($project->image_cover && $project->image_cover !== $data['image_cover']) {
-                $this->imageManager->deleteImageFromLocal($project->image_cover);
-            }
+        // 5. Update image_cover (always the first image in the array)
+        if (!empty($finalImages)) {
+            $newCover = $finalImages[0];
+            
+            // If cover changed, we might want to delete the old cover if it's not in the new images list
+            // But since image_cover is usually one of the images in the 'images' array, 
+            // the deletion logic in step 3 already handles it.
+            $data['image_cover'] = $newCover;
+        } else {
+            $data['image_cover'] = null;
         }
 
-        // مهم: شيل images_files من data لأنها مش column في DB
+        // Remove images_files as it's not a DB column
         unset($data['images_files']);
 
-        // =========================
-        // 5) Update record
-        // =========================
+        // 6. Update project record
         $updated = $this->projectRepository->update($project, $data);
-        if (! $updated) {
+        if (!$updated) {
             return false;
         }
 
-        // =========================
-        // 6) Sync teams لو موجودة
-        // =========================
+        // 7. Sync teams
         if (array_key_exists('teams', $data)) {
             $teams = is_array($data['teams']) ? $data['teams'] : [];
-            $teams = array_values(array_filter($teams, fn ($v) => is_numeric($v)));
-            $teams = array_map('intval', $teams);
+            $teams = array_values(array_filter($teams, fn($v) => is_numeric($v)));
             $project->teams()->sync($teams);
         }
 
@@ -157,12 +126,16 @@ class ProjectService
     public function delete($id)
     {
         $project = $this->projectRepository->getProject($id);
-        if (! $project) {
+        if (!$project) {
             return false;
         }
 
-        $this->imageManager->deleteImageFromLocal($project->images);
-        $this->imageManager->deleteImageFromLocal($project->image_cover);
+        if ($project->images) {
+            $this->imageManager->deleteImageFromLocal($project->images);
+        }
+        if ($project->image_cover) {
+            $this->imageManager->deleteImageFromLocal($project->image_cover);
+        }
 
         return $this->projectRepository->delete($project);
     }
