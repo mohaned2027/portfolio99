@@ -17,6 +17,10 @@ php artisan optimize:clear || true
 
 echo "🔐 Fixing permissions..."
 chmod -R 775 storage bootstrap/cache || true
+echo "DB_HOST=$DB_HOST"
+echo "DB_PORT=$DB_PORT"
+echo "DB_DATABASE=$DB_DATABASE"
+echo "DB_USERNAME=$DB_USERNAME"
 
 echo "🛢️ Checking database connection..."
 php -r '
