@@ -37,3 +37,5 @@ EXPOSE 8080
 RUN chmod +x /var/www/start.sh
 
 CMD ["sh", "/var/www/start.sh"]
+
+
