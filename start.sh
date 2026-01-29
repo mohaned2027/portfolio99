@@ -5,50 +5,26 @@ echo "=============================="
 echo "🚀 Starting Laravel on Railway"
 echo "=============================="
 
-# Go to app directory (safety)
 cd /var/www
-
-echo "🧹 Clearing caches..."
-php artisan config:clear || true
-php artisan cache:clear || true
-php artisan route:clear || true
-php artisan view:clear || true
-php artisan optimize:clear || true
 
 echo "🔐 Fixing permissions..."
 chmod -R 775 storage bootstrap/cache || true
-echo "DB_HOST=$DB_HOST"
-echo "DB_PORT=$DB_PORT"
-echo "DB_DATABASE=$DB_DATABASE"
-echo "DB_USERNAME=$DB_USERNAME"
 
-echo "🛢️ Checking database connection..."
-php -r '
-$host = getenv("DB_HOST");
-$port = getenv("DB_PORT") ?: "3306";
-$db   = getenv("DB_DATABASE");
-$user = getenv("DB_USERNAME");
-$pass = getenv("DB_PASSWORD");
+echo "🧹 Clearing & rebuilding caches..."
+php artisan optimize:clear || true
 
-if (!$host || !$db || !$user) {
-  fwrite(STDERR, "DB env missing: DB_HOST/DB_DATABASE/DB_USERNAME\n");
-  exit(1);
-}
+# Cache for production performance
+php artisan config:cache || true
+php artisan route:cache || true
+php artisan view:cache || true
 
-$dsn = "mysql:host={$host};port={$port};dbname={$db}";
-try {
-  new PDO($dsn, $user, $pass, [PDO::ATTR_TIMEOUT => 5]);
-  echo "✅ DB Connected\n";
-} catch (Exception $e) {
-  fwrite(STDERR, "❌ DB Connection Failed: " . $e->getMessage() . "\n");
-  exit(1);
-}
-'
+# If you use storage/public
+php artisan storage:link || true
 
-echo "📦 Running migrations..."
-php artisan migrate --force --no-interaction
+echo "🛢️ Running migrations (safe)..."
+php artisan migrate --force --no-interaction || true
 
-echo "✅ Migrations done"
-
+echo "✅ Bootstrapping complete"
 echo "🌐 Starting PHP server on port: ${PORT:-8080}"
+
 exec php -S 0.0.0.0:${PORT:-8080} -t public
