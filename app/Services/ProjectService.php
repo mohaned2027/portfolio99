@@ -83,16 +83,36 @@ class ProjectService
 
         // 3. Delete removed images from storage
         $currentImages = is_array($project->images) ? $project->images : [];
-        // Important: only delete if the image is NOT in the kept list AND NOT the new cover
-        $removedImages = array_diff($currentImages, $keptImages);
         
-        // We should also check if the image_cover is being removed
-        if ($project->image_cover && !in_array($project->image_cover, $keptImages) && (!isset($finalImages[0]) || $project->image_cover !== $finalImages[0])) {
-            $removedImages[] = $project->image_cover;
+        // Normalize paths for comparison (ensure no leading slashes or full URLs)
+        $normalizePath = function($path) {
+            if (str_contains($path, '/uploads/')) {
+                return 'uploads/' . explode('/uploads/', $path)[1];
+            }
+            return ltrim($path, '/');
+        };
+
+        $normalizedCurrent = array_map($normalizePath, $currentImages);
+        $normalizedKept = array_map($normalizePath, $keptImages);
+        
+        $removedImages = [];
+        foreach ($normalizedCurrent as $index => $path) {
+            if (!in_array($path, $normalizedKept)) {
+                $removedImages[] = $currentImages[$index];
+            }
+        }
+        
+        // Check if image_cover needs deletion
+        if ($project->image_cover) {
+            $normalizedCover = $normalizePath($project->image_cover);
+            $normalizedFinalImages = array_map($normalizePath, $finalImages);
+            if (!in_array($normalizedCover, $normalizedFinalImages)) {
+                $removedImages[] = $project->image_cover;
+            }
         }
 
         if (!empty($removedImages)) {
-            $this->imageManager->deleteImageFromLocal(array_unique(array_values($removedImages)));
+            $this->imageManager->deleteImageFromLocal(array_unique($removedImages));
         }
 
         // 4. Merge kept and new images
