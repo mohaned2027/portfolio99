@@ -24,13 +24,7 @@ class ProjectRequest extends FormRequest
     {
         $data = [
             'title' => 'required|string|min:3|max:255',
-            'slug' => [
-                'required',
-                'string',
-                'min:3',
-                'max:255',
-                Rule::unique('projects', 'slug'),
-            ],
+
             'short_desc' => 'required|string|min:3|max:255',
             'desc' => 'required|string|min:3',
             'images' => 'required|array',
@@ -47,13 +41,7 @@ class ProjectRequest extends FormRequest
 
         if ($this->method() == 'PUT') {
             $data['title'] = 'sometimes|string|min:3|max:255';
-            $data['slug'] = [
-                'sometimes',
-                'string',
-                'min:3',
-                'max:255',
-                Rule::unique('projects', 'slug')->ignore($this->route('project') ?? $this->route('id')),
-            ];
+          
             $data['short_desc'] = 'sometimes|string|min:3|max:255';
             $data['desc'] = 'sometimes|string|min:3';
             $data['image_cover'] = 'sometimes|image|mimes:jpg,jpeg,png,webp|max:2048';
