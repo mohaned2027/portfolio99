@@ -83,9 +83,16 @@ class ProjectService
 
         // 3. Delete removed images from storage
         $currentImages = is_array($project->images) ? $project->images : [];
+        // Important: only delete if the image is NOT in the kept list AND NOT the new cover
         $removedImages = array_diff($currentImages, $keptImages);
+        
+        // We should also check if the image_cover is being removed
+        if ($project->image_cover && !in_array($project->image_cover, $keptImages) && (!isset($finalImages[0]) || $project->image_cover !== $finalImages[0])) {
+            $removedImages[] = $project->image_cover;
+        }
+
         if (!empty($removedImages)) {
-            $this->imageManager->deleteImageFromLocal(array_values($removedImages));
+            $this->imageManager->deleteImageFromLocal(array_unique(array_values($removedImages)));
         }
 
         // 4. Merge kept and new images
