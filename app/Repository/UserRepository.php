@@ -11,6 +11,10 @@ class UserRepository
         return User::where('email', $data['email'])->first();
     }
 
+    public function getUserData(){
+        return User::first();
+    }
+
     public function deleteUserToken($user)
     {
         return $user->currentAccessToken()->delete();

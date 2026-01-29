@@ -31,7 +31,7 @@ class ProjectResource extends JsonResource
             'status' => $this->status,
             // 'teams' => $this->whenLoaded('teams', fn () => TeamResource::collection($this->teams->pluck('id'))),
             'team_members' => $this->whenLoaded('teams', fn () => $this->teams->pluck('id')),
-            'service' => $this->whenLoaded('service', fn () => $this->service->id),
+            'service_id' => $this->whenLoaded('service', fn () => $this->service->id),
         ];
     }
 }

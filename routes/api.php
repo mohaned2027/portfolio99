@@ -41,7 +41,7 @@ Route::post('/auth/forgot-password', [ForgetPasswordController::class, 'send']);
 Route::post('/auth/verify-otp', [OtpController::class, 'verify']);
 Route::post('/auth/reset-password', [ResetPasswordController::class, 'reset']);
 Route::post('/contact-us/store', [ContactUsController::class, 'store']);
-Route::get('/user', [UserController::class, 'index']);
+Route::get('/user/data', [UserController::class, 'getUserData']);
 // Services
 Route::get('/service', [ServiceController::class, 'index']);
 // Portfolio

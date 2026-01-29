@@ -23,6 +23,11 @@ class UserController extends Controller
         return apiResponce(200, 'Success', new UserResource($user));
     }
 
+    public function getUserData(){
+        $user = $this->userService->getUserData();
+        return apiResponce(200, 'Success', new UserResource($user));
+    }
+
     /**
      * Show the form for creating a new resource.
      */

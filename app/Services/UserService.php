@@ -45,6 +45,10 @@ class UserService
 
     }
 
+    public function getUserData(){
+        return $this->userRepository->getUserData();
+    }
+
     public function update($data)
     {
         $user = $this->getUserAuth();
