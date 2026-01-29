@@ -41,7 +41,7 @@ class ProjectRequest extends FormRequest
         if ($this->method() == 'PUT') {
             $data['title'] = 'sometimes|string|min:3|max:255';
 
-            $data['short_desc'] = 'sometimes|string|min:3|max:255';
+            $data['short_desc'] = 'sometimes|string|min:3';
             $data['desc'] = 'sometimes|string|min:3';
             $data['image_cover'] = 'sometimes|image|mimes:jpg,jpeg,png,webp|max:2048';
             $data['images'] = 'sometimes|array';
