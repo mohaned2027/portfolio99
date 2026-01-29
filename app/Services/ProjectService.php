@@ -81,6 +81,10 @@ class ProjectService
             }
         }
 
+        // 4. Merge kept and new images
+        $finalImages = array_values(array_merge($keptImages, $newImages));
+        $data['images'] = $finalImages;
+
         // 3. Delete removed images from storage
         $currentImages = is_array($project->images) ? $project->images : [];
         
@@ -114,10 +118,6 @@ class ProjectService
         if (!empty($removedImages)) {
             $this->imageManager->deleteImageFromLocal(array_unique($removedImages));
         }
-
-        // 4. Merge kept and new images
-        $finalImages = array_values(array_merge($keptImages, $newImages));
-        $data['images'] = $finalImages;
 
         // 5. Update image_cover (always the first image in the array)
         if (!empty($finalImages)) {
