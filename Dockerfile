@@ -1,11 +1,11 @@
-FROM php:8.4-fpm
+FROM php:8.4-cli
 
 # System deps
 RUN apt-get update && apt-get install -y \
   git curl zip unzip libpng-dev libonig-dev libxml2-dev \
   && rm -rf /var/lib/apt/lists/*
 
-# PHP extensions (عدل حسب احتياجك)
+# PHP extensions
 RUN docker-php-ext-install pdo pdo_mysql mbstring bcmath gd
 
 # Composer
@@ -19,9 +19,13 @@ COPY . .
 # Install deps
 RUN composer install --no-dev --optimize-autoloader
 
-# Optimize (اختياري)
-RUN php artisan config:cache || true
-RUN php artisan route:cache  || true
+# Laravel writable dirs (مهم جدًا)
+RUN mkdir -p storage bootstrap/cache \
+ && chmod -R 775 storage bootstrap/cache
 
-# Render uses PORT env var
-CMD ["sh", "-c", "php artisan serve --host=0.0.0.0 --port=${PORT:-8000}"]
+# Railway supplies PORT; default 8080
+ENV PORT=8080
+
+EXPOSE 8080
+
+CMD sh -lc 'php -S 0.0.0.0:${PORT} -t public'
