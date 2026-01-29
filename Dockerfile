@@ -24,8 +24,8 @@ COPY . .
 # Install PHP deps
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
-# If package.json exists -> build assets (optional)
-RUN if [ -f package.json ]; then npm ci && npm run build; fi
+# Backend API only — no Vite build here
+# RUN if [ -f package.json ]; then npm ci && npm run build; fi
 
 # Permissions for Laravel
 RUN chmod -R 775 storage bootstrap/cache || true
