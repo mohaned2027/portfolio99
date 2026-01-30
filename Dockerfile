@@ -34,7 +34,8 @@ RUN chmod -R 775 storage bootstrap/cache || true
 EXPOSE 8080
 
 # Start script
-RUN chmod +x /var/www/start.sh
+# Start scripts
+RUN chmod +x /var/www/start.sh /var/www/worker.sh || true
 
 CMD ["sh", "/var/www/start.sh"]
 
