@@ -17,9 +17,9 @@ class SettingResource extends JsonResource
         return [
             'id' => $this->id,
             'company' => $this->company,
-            'logo' => asset($this->logo),
-            'favicon' => asset($this->favicon),
-            'cv' => asset($this->cv),
+            'logo' => secure_asset($this->logo),
+            'favicon' => secure_asset($this->favicon),
+            'cv' => secure_asset($this->cv),
         ];
     }
 }

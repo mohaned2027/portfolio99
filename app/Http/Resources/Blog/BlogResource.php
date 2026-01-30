@@ -19,7 +19,7 @@ class BlogResource extends JsonResource
             'title' => $this->title,
             'category' => $this->category,
             'date' => $this->date?->toDateString(),
-            'image' => asset($this->image),
+            'image' => secure_asset($this->image),
             'excerpt' => $this->excerpt,
             'content' => $this->content,
             'link' => $this->link,

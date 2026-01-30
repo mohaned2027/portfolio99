@@ -2,10 +2,11 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\ServiceProvider;
-use Symfony\Component\Mailer\Bridge\Brevo\Transport\BrevoTransportFactory;
 use Symfony\Component\Mailer\Transport\Dsn;
+use Symfony\Component\Mailer\Bridge\Brevo\Transport\BrevoTransportFactory;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -29,5 +30,6 @@ class AppServiceProvider extends ServiceProvider
         //         config('services.brevo.key')// أو استخدم env('BREVO_API_KEY') مباشرة
         //     ));
         // });
+        URL::forceScheme('https');
     }
 }
