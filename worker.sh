@@ -13,4 +13,4 @@ chmod -R 775 storage bootstrap/cache || true
 php artisan optimize:clear || true
 php artisan queue:restart || true
 
-exec php artisan queue:work --sleep=3 --tries=1 --timeout=180
+exec php artisan queue:work --sleep=0 --tries=1 --timeout=180
