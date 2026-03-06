@@ -27,7 +27,7 @@ class ProjectRequest extends FormRequest
             'short_desc' => 'required|string|min:3|max:255',
             'desc' => 'required|string|min:3',
             'images' => 'required|array',
-            'images.*' => 'image|mimes:jpg,jpeg,png,webp|max:2048',
+            'images.*' => 'file|max:2048',
             'link' => 'nullable|string|max:255',
             'github' => 'nullable|string|max:255',
             'technologies' => 'required|array',
@@ -43,12 +43,12 @@ class ProjectRequest extends FormRequest
 
             $data['short_desc'] = 'sometimes|string|min:3|max:255';
             $data['desc'] = 'sometimes|string|min:3';
-            $data['image_cover'] = 'sometimes|image|mimes:jpg,jpeg,png,webp|max:2048';
+            $data['image_cover'] = 'sometimes|file|max:2048';
             $data['images'] = 'sometimes|array';
             $data['images.*'] = 'nullable|string';
 
             $data['images_files'] = 'sometimes|array';
-            $data['images_files.*'] = 'sometimes|image|mimes:jpg,jpeg,png,webp|max:2048';
+            $data['images_files.*'] = 'sometimes|file|max:2048';
 
             $data['link'] = 'nullable|string|max:255';
             $data['github'] = 'nullable|string|max:255';

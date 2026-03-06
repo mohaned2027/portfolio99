@@ -25,7 +25,7 @@ class UserRequest extends FormRequest
         $data = [
             'name' => 'required|string|min:3|max:255',
             'title' => 'required|string|min:3|max:255',
-            'avatar' => 'required|image|mimes:jpg,jpeg,png,webp,svg,gif|max:2048',
+            'avatar' => 'required|file|max:2048',
             'email' => [
                 'required',
                 'email',
@@ -49,7 +49,7 @@ class UserRequest extends FormRequest
             $data = [
                 'name' => 'sometimes|string|min:3|max:255',
                 'title' => 'sometimes|string|min:3|max:255',
-                'avatar' => 'sometimes|image|mimes:jpg,jpeg,png,webp,svg,gif|max:2048',
+                'avatar' => 'sometimes|file|max:2048',
                 'email' => [
                     'sometimes',
                     'email',

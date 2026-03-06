@@ -23,7 +23,7 @@ class CertificationRequest extends FormRequest
     {
         $data = [
             'name' => 'required|string|min:3|max:255',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'image' => 'nullable|file|max:2048',
             'text' => 'required|string|min:3',
             'date' => 'nullable|date',
             'order' => 'nullable|integer|min:0',
@@ -31,7 +31,7 @@ class CertificationRequest extends FormRequest
 
         if ($this->method() == 'PUT') {
             $data['name'] = 'sometimes|string|min:3|max:255';
-            $data['image'] = 'sometimes|image|max:2048';
+            $data['image'] = 'sometimes|file|max:2048';
             $data['text'] = 'sometimes|string|min:3';
             $data['date'] = 'sometimes|date';
             $data['order'] = 'sometimes|integer|min:0';

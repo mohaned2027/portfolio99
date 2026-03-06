@@ -25,7 +25,7 @@ class BlogRequest extends FormRequest
             'title' => 'required|string|min:3|max:255',
             'category' => 'required|string|min:2|max:255',
             'date' => 'required|date',
-            'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'image' => 'required|file|max:2048',
             'excerpt' => 'required|string|min:3|max:255',
             'content' => 'required|string|min:3',
             'link' => 'required|string|min:3|max:255',
@@ -35,7 +35,7 @@ class BlogRequest extends FormRequest
             $data['title'] = 'sometimes|string|min:3|max:255';
             $data['category'] = 'sometimes|string|min:2|max:255';
             $data['date'] = 'sometimes|date';
-            $data['image'] = 'sometimes|image|mimes:jpg,jpeg,png,webp|max:2048';
+            $data['image'] = 'sometimes|file|max:2048';
             $data['excerpt'] = 'sometimes|string|min:3|max:255';
             $data['content'] = 'sometimes|string|min:3';
             $data['link'] = 'sometimes|string|min:3|max:255';
