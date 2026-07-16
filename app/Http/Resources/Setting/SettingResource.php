@@ -4,6 +4,7 @@ namespace App\Http\Resources\Setting;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class SettingResource extends JsonResource
 {
@@ -17,9 +18,15 @@ class SettingResource extends JsonResource
         return [
             'id' => $this->id,
             'company' => $this->company,
-            'logo' => secure_asset($this->logo),
-            'favicon' => secure_asset($this->favicon),
-            'cv' => secure_asset($this->cv),
+            'logo' =>  $this->logo
+                ? Storage::disk('s3')->url($this->logo)
+                : null,
+            'favicon' =>  $this->favicon
+                ? Storage::disk('s3')->url($this->favicon)
+                : null,
+            'cv' =>  $this->cv
+                ? Storage::disk('s3')->url($this->cv)
+                : null,
         ];
     }
 }

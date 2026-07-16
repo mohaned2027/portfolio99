@@ -30,21 +30,21 @@ class SettingService
     public function store($data)
     {
         if (isset($data['logo'])) {
-            $data['logo'] = $this->imageManager->uploadSingleImage($data['logo'], 'settings', 'store');
+            $data['logo'] = $this->imageManager->uploadSingleImage($data['logo'], 'settings', 's3');
             if (! $data['logo']) {
                 return false;
             }
         }
 
         if (isset($data['favicon'])) {
-            $data['favicon'] = $this->imageManager->uploadSingleImage($data['favicon'], 'settings', 'store');
+            $data['favicon'] = $this->imageManager->uploadSingleImage($data['favicon'], 'settings', 's3');
             if (! $data['favicon']) {
                 return false;
             }
         }
 
         if (isset($data['cv'])) {
-            $data['cv'] = $this->imageManager->uploadSingleImage($data['cv'], 'settings', 'store');
+            $data['cv'] = $this->imageManager->uploadSingleImage($data['cv'], 'settings', 's3');
             if (! $data['cv']) {
                 return false;
             }
@@ -64,7 +64,7 @@ class SettingService
             $data['logo'] = $this->imageManager->uploadSingleImage(
                 $data['logo'],
                 'settings',
-                'store',
+                's3',
                 $setting->logo
             );
             if (! $data['logo']) {
@@ -76,7 +76,7 @@ class SettingService
             $data['favicon'] = $this->imageManager->uploadSingleImage(
                 $data['favicon'],
                 'settings',
-                'store',
+                's3',
                 $setting->favicon
             );
             if (! $data['favicon']) {
@@ -88,7 +88,7 @@ class SettingService
             $data['cv'] = $this->imageManager->uploadSingleImage(
                 $data['cv'],
                 'settings',
-                'store',
+                's3',
                 $setting->cv
             );
             if (! $data['cv']) {
@@ -105,9 +105,9 @@ class SettingService
         if (! $setting) {
             return false;
         }
-        $this->imageManager->deleteImageFromLocal($setting->logo);
-        $this->imageManager->deleteImageFromLocal($setting->favicon);
-        $this->imageManager->deleteImageFromLocal($setting->cv);
+        $this->imageManager->deleteImageFromLocal($setting->logo, 's3');
+        $this->imageManager->deleteImageFromLocal($setting->favicon, 's3');
+        $this->imageManager->deleteImageFromLocal($setting->cv, 's3');
         return $this->settingRepository->delete($setting);
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Resources\Project;
 use App\Http\Resources\Team\TeamResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class ProjectResource extends JsonResource
 {
@@ -22,8 +23,8 @@ class ProjectResource extends JsonResource
             'slug' => $this->slug,
             'short_desc' => $this->short_desc,
             'desc' => $this->desc,
-            'image_cover' => secure_asset($this->image_cover),
-            'images' => collect($this->images)->map(fn ($img) => secure_asset($img)),
+            'image_cover' => $this->image_cover ? Storage::disk('s3')->url($this->image_cover) : null,
+            'images' => collect($this->images)->map(fn ($img) => $img ? Storage::disk('s3')->url($img) : null),
             // 'images' => array_map(fn ($img) => asset($img), $this->images),
             'link' => $this->link,
             'github' => $this->github,

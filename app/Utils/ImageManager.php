@@ -3,6 +3,7 @@
 namespace App\Utils;
 
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class ImageManager
@@ -14,7 +15,7 @@ class ImageManager
     {
         if ($file) {
             if ($oldPath) {
-                $this->deleteImageFromLocal($oldPath);
+                $this->deleteImageFromLocal($oldPath , $disk);
             }
             $newImageName = $this->generateName($file, $path, $disk);
 
@@ -31,21 +32,20 @@ class ImageManager
         return $image->storeAs("uploads/$path", $file, ['disk' => $disk]);
 
     }
-
-    public function deleteImageFromLocal($imagePath)
-    {
-        if (is_array($imagePath)) {
-            foreach ($imagePath as $path) {
-                if (File::exists($path)) {
-                    File::delete($path);
-                }
+public function deleteImageFromLocal($imagePath, $disk = 'store')
+{
+    if (is_array($imagePath)) {
+        foreach ($imagePath as $path) {
+            if ($path && Storage::disk($disk)->exists($path)) {
+                Storage::disk($disk)->delete($path);
             }
-
-            return;
         }
 
-        if ($imagePath && File::exists($imagePath)) {
-            File::delete($imagePath);
-        }
+        return;
     }
+
+    if ($imagePath && Storage::disk($disk)->exists($imagePath)) {
+        Storage::disk($disk)->delete($imagePath);
+    }
+}
 }

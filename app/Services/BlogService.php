@@ -22,7 +22,7 @@ class BlogService
     public function store($data)
     {
         if (isset($data['image'])) {
-            $data['image'] = $this->imageManager->uploadSingleImage($data['image'], 'blogs', 'store');
+            $data['image'] = $this->imageManager->uploadSingleImage($data['image'], 'blogs', 's3');
             if (! $data['image']) {
                 return false;
             }
@@ -36,7 +36,7 @@ class BlogService
         $blog = $this->blogRepository->getBlog($id);
 
         if (isset($data['image'])) {
-            $data['image'] = $this->imageManager->uploadSingleImage($data['image'], 'blogs', 'store', $blog->image);
+            $data['image'] = $this->imageManager->uploadSingleImage($data['image'], 'blogs', 's3', $blog->image);
             if (! $data['image']) {
                 return false;
             }
@@ -54,7 +54,7 @@ class BlogService
         if (! $blog) {
             return false;
         }
-        $this->imageManager->deleteImageFromLocal($blog->image);
+        $this->imageManager->deleteImageFromLocal($blog->image , 's3');
 
         return $this->blogRepository->delete($blog);
     }

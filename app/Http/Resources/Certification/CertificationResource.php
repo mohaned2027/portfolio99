@@ -4,6 +4,7 @@ namespace App\Http\Resources\Certification;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class CertificationResource extends JsonResource
 {
@@ -17,7 +18,7 @@ class CertificationResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'image' => secure_asset($this->image),
+            'image' => $this->image ? Storage::disk('s3')->url($this->image) : null,
             'text' => $this->text,
             'date' => $this->date?->toDateString(),
             'order' => $this->order,

@@ -22,7 +22,7 @@ class TeamService
     public function store($data)
     {
         if (isset($data['logo'])) {
-            $data['logo'] = $this->imageManager->uploadSingleImage($data['logo'], 'Teams', 'store');
+            $data['logo'] = $this->imageManager->uploadSingleImage($data['logo'], 'Teams', 's3');
             if (! $data['logo']) {
                 return false;
             }
@@ -37,7 +37,7 @@ class TeamService
 
 
         if (isset($data['logo'])) {
-            $data['logo'] = $this->imageManager->uploadSingleImage($data['logo'], 'Teams', 'store', $team->logo);
+            $data['logo'] = $this->imageManager->uploadSingleImage($data['logo'], 'Teams', 's3', $team->logo);
             if (! $data['logo']) {
                 return false;
             }
@@ -55,7 +55,7 @@ class TeamService
         if (! $team) {
             return false;
         }
-        $this->imageManager->deleteImageFromLocal($team->logo);
+        $this->imageManager->deleteImageFromLocal($team->logo , 's3');
 
         return $this->teamRepository->delete($team);
     }

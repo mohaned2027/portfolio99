@@ -27,7 +27,7 @@ class ProjectService
             $uploadedImages = [];
             foreach ($data['images'] as $image) {
                 if ($image instanceof UploadedFile) {
-                    $path = $this->imageManager->uploadSingleImage($image, 'projects', 'store');
+                    $path = $this->imageManager->uploadSingleImage($image, 'projects', 's3');
                     if ($path) {
                         $uploadedImages[] = $path;
                     }
@@ -73,7 +73,7 @@ class ProjectService
         if (isset($data['images_files']) && is_array($data['images_files'])) {
             foreach ($data['images_files'] as $file) {
                 if ($file instanceof UploadedFile) {
-                    $path = $this->imageManager->uploadSingleImage($file, 'projects', 'store');
+                    $path = $this->imageManager->uploadSingleImage($file, 'projects', 's3');
                     if ($path) {
                         $newImages[] = $path;
                     }
@@ -87,7 +87,7 @@ class ProjectService
 
         // 3. Delete removed images from storage
         $currentImages = is_array($project->images) ? $project->images : [];
-        
+
         // Normalize paths for comparison (ensure no leading slashes or full URLs)
         $normalizePath = function($path) {
             if (str_contains($path, '/uploads/')) {
@@ -98,14 +98,14 @@ class ProjectService
 
         $normalizedCurrent = array_map($normalizePath, $currentImages);
         $normalizedKept = array_map($normalizePath, $keptImages);
-        
+
         $removedImages = [];
         foreach ($normalizedCurrent as $index => $path) {
             if (!in_array($path, $normalizedKept)) {
                 $removedImages[] = $currentImages[$index];
             }
         }
-        
+
         // Check if image_cover needs deletion
         if ($project->image_cover) {
             $normalizedCover = $normalizePath($project->image_cover);
@@ -116,15 +116,15 @@ class ProjectService
         }
 
         if (!empty($removedImages)) {
-            $this->imageManager->deleteImageFromLocal(array_unique($removedImages));
+            $this->imageManager->deleteImageFromLocal(array_unique($removedImages), 's3');
         }
 
         // 5. Update image_cover (always the first image in the array)
         if (!empty($finalImages)) {
             $newCover = $finalImages[0];
-            
+
             // If cover changed, we might want to delete the old cover if it's not in the new images list
-            // But since image_cover is usually one of the images in the 'images' array, 
+            // But since image_cover is usually one of the images in the 'images' array,
             // the deletion logic in step 3 already handles it.
             $data['image_cover'] = $newCover;
         } else {
@@ -158,10 +158,10 @@ class ProjectService
         }
 
         if ($project->images) {
-            $this->imageManager->deleteImageFromLocal($project->images);
+            $this->imageManager->deleteImageFromLocal($project->images, 's3');
         }
         if ($project->image_cover) {
-            $this->imageManager->deleteImageFromLocal($project->image_cover);
+            $this->imageManager->deleteImageFromLocal($project->image_cover, 's3');
         }
 
         return $this->projectRepository->delete($project);

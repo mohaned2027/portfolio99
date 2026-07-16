@@ -60,7 +60,7 @@ class UserService
             $data['avatar'] = $this->imageManager->uploadSingleImage(
                 $data['avatar'],
                 'users',
-                'store',
+                's3',
                 $user->avatar
             );
             if (! $data['avatar']) {

@@ -25,7 +25,7 @@ class CertificationService
     public function store($data)
     {
         if (isset($data['image'])) {
-            $data['image'] = $this->imageManager->uploadSingleImage($data['image'], 'certifications', 'store');
+            $data['image'] = $this->imageManager->uploadSingleImage($data['image'], 'certifications', 's3');
             if (! $data['image']) {
                 return false;
             }
@@ -42,7 +42,7 @@ class CertificationService
         }
 
         if (isset($data['image'])) {
-            $data['image'] = $this->imageManager->uploadSingleImage($data['image'], 'certifications', 'store', $certification->image);
+            $data['image'] = $this->imageManager->uploadSingleImage($data['image'], 'certifications', 's3', $certification->image);
             if (! $data['image']) {
                 return false;
             }
@@ -57,7 +57,7 @@ class CertificationService
         if (! $certification) {
             return false;
         }
-        $this->imageManager->deleteImageFromLocal($certification->image);
+        $this->imageManager->deleteImageFromLocal($certification->image , 's3');
         return $this->certificationRepository->delete($certification);
     }
 }
